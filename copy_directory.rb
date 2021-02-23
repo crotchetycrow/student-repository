@@ -36,17 +36,21 @@ def print_header
 end
 
 def print(students)
-  students.map.each_with_index do |student, i|
-    puts "#{i + 1}. #{student[:name]} (#{student[:cohort]} cohort)"
+  puts "Enter a specific letter: "
+  user_input_letter = gets.chomp
+  i = 0
+  students.each do |student|
+    if student[:name].start_with?(user_input_letter.upcase, user_input_letter.downcase)
+      puts "#{student[:name]} (#{student[:cohort]} cohort)"
+      i += 1
+    else
+    end
   end
+  puts "Overall, we have #{i} students with the letter #{user_input_letter}"
 end
 
-def print_footer(names)
-  puts "Overall, we have #{names.count} great students"
-end
+
 
 students = input_students
 print_header
-print_only(students)
 print(students)
-print_footer(students)
