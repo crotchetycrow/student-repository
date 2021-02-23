@@ -36,17 +36,12 @@ def print_header
 end
 
 def print(students)
-  puts "Enter a specific letter: "
-  user_input_letter = gets.chomp
-  i = 0
   students.each do |student|
-    if student[:name].start_with?(user_input_letter.upcase, user_input_letter.downcase)
+    if student[:name].length < 12
       puts "#{student[:name]} (#{student[:cohort]} cohort)"
-      i += 1
     else
     end
   end
-  puts "Overall, we have #{i} students with the letter #{user_input_letter}"
 end
 
 
