@@ -16,6 +16,43 @@ def create_directory
   create_directory
 end
 
+def input_cohort
+  puts "Please enter the month number of the cohort the student is on".center(@width)
+  cohort = gets.chomp
+  next_cohort = :February
+
+  case cohort
+  when "1"
+    cohort = :January
+  when "2"
+    cohort = :February
+  when "3"
+    cohort = :March
+  when "4"
+    cohort = :April
+  when "5"
+    cohort = :May
+  when "6"
+    cohort = :June
+  when "7"
+    cohort = :July
+  when "8"
+    cohort = :August
+  when "9"
+    cohort = :September
+  when "10"
+    cohort = :October
+  when "11"
+    cohort = :November
+  when "12"
+    cohort = :December
+  else
+    puts "Invalid input. Student placed in next available cohort, #{next_cohort}"
+    cohort = next_cohort
+  end
+  cohort
+end
+
 def input_students
   #stores studentss in an array
   students = []
@@ -23,9 +60,14 @@ def input_students
   begin_directory = create_directory
 
   while begin_directory
+    number_student = 0
     #grabs user input for name and country, height
     puts "Please enter the name of the students".center(@width)
     name = gets.chomp
+    if name.empty?
+      puts "Invalid input, student stored as Student Number: #{number_student += 1}"
+    end
+    cohort = input_cohort
     puts "Please enter country of birth".center(@width)
     country_of_birth = gets.chomp
     puts "Please enter height in cm (if available)".center(@width)
@@ -41,7 +83,7 @@ def input_students
     end
     hobbies
     #pushes name, country, cohort and hobbies onto students array
-    students << {name: name, country_of_birth: country_of_birth, height: height, hobbies: hobbies.join(", "), cohort: :november}
+    students << {name: name, country_of_birth: country_of_birth, height: height, hobbies: hobbies.join(", "), cohort: cohort.to_sym}
     #counts number of students
     puts "Now we have #{students.count} students".center(@width)
     #creates a variable that triggers create_directory to give user option to end
