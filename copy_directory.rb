@@ -11,7 +11,10 @@ def create_directory
   elsif user_input == "NO"
     return false
   else
-    "Did not understand input".center(@width)
+    puts "!----ERROR----!".center(@width)
+    puts "Did not understand input. Please input 'YES' or 'NO'".center(@width)
+    puts "!----ERROR----!".center(@width)
+    puts
   end
   #returns method to start again
   create_directory
@@ -47,9 +50,9 @@ def input_cohort
     cohort = :November
   when "12"
     cohort = :December
-  else
-    puts "Invalid input. Student placed in next available cohort, #{next_cohort}"
-    cohort = next_cohort
+  # else
+  #   puts "Invalid input. Student placed in next available cohort, #{next_cohort}"
+  #   cohort = next_cohort
   end
   cohort
 end
@@ -67,12 +70,12 @@ def input_students
   begin_directory = create_directory
 
   while begin_directory
-    number_student = 0
     #grabs user input for name and country, height
     puts "Please enter the name of the students".center(@width)
     name = gets.chop
     if name.empty?
-      puts "Invalid input, student stored as Student Number: #{number_student += 1}".center(@width)
+      puts "No input"
+      break
     end
     cohort = input_cohort
     puts "Please enter country of birth".center(@width)
@@ -101,7 +104,7 @@ end
 
 def print_student_list_by_cohort(students)
   if @students.empty?
-    puts "UNAVAILABLE".center(@width)
+    puts "COHORT LIST UNAVAILABLE".center(@width)
   else
     cohorts = @students.map do |student|
       student[:cohort]
@@ -119,17 +122,27 @@ end
 
 
 def print_header
-  puts "The students of Villians Academy".center(@width)
-  puts "-------------".center(@width)
-  puts
+  if !@students.empty?
+    puts "The students of Villians Academy".center(@width)
+    puts "-------------".center(@width)
+    puts
+  else
+    puts "The students of Villians Academy".center(@width)
+    puts "-------------".center(@width)
+    puts
+  end
 end
 
 #method to count number of students and puts name, country...
 def print(students)
-  i = 0
-  while i < @students.count
-    puts "#{@students[i][:name]}, #{@students[i][:country_of_birth]}, #{@students[i][:height]}cm, #{@students[i][:hobbies]} - (#{@students[i][:cohort]} cohort)".center(@width)
-    i += 1
+  if students.empty?
+    puts "No students inputted".upcase.center(@width)
+  else
+    i = 0
+    while i < @students.count
+      puts "#{@students[i][:name]}, #{@students[i][:country_of_birth]}, #{@students[i][:height]}cm, #{@students[i][:hobbies]} - (#{@students[i][:cohort]} cohort)".center(@width)
+      i += 1
+    end
   end
 end
 
