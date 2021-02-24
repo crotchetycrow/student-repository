@@ -5,7 +5,7 @@
 #request input from user to add a new student
 def create_directory
   puts "Input a new student? 'YES' or 'NO'".center(@width)
-  user_input = gets.chomp.upcase
+  user_input = gets.chop.upcase
   if user_input == "YES"
     return true
   elsif user_input == "NO"
@@ -19,7 +19,7 @@ end
 
 def input_cohort
   puts "Please enter cohort month (please enter month number)".center(@width)
-  cohort = gets.chomp
+  cohort = gets.chop
   next_cohort = :February
 
   case cohort
@@ -70,23 +70,23 @@ def input_students
     number_student = 0
     #grabs user input for name and country, height
     puts "Please enter the name of the students".center(@width)
-    name = gets.chomp
+    name = gets.chop
     if name.empty?
       puts "Invalid input, student stored as Student Number: #{number_student += 1}".center(@width)
     end
     cohort = input_cohort
     puts "Please enter country of birth".center(@width)
-    country_of_birth = gets.chomp
+    country_of_birth = gets.chop
     puts "Please enter height in cm (if available)".center(@width)
-    height = gets.chomp
+    height = gets.chop
     #grab user input for hobbies and stores it in an empty array. Join used to convert into string
     hobbies = []
     puts "Please enter student's hobbies".center(@width)
     puts "(To finish, just hit return twice)".center(@width)
-    hobby = gets.chomp
+    hobby = gets.chop
     while !hobby.empty?
       hobbies << hobby
-      hobby = gets.chomp
+      hobby = gets.chop
     end
     hobbies
     #pushes name, country, cohort and hobbies onto students array
@@ -128,7 +128,7 @@ end
 def print(students)
   i = 0
   while i < @students.count
-    puts "#{@students[i][:name]}, #{@students[i][:country_of_birth]}, #{@students[i][:height]} cm, #{@students[i][:hobbies]} - (#{@students[i][:cohort]} cohort)".center(@width)
+    puts "#{@students[i][:name]}, #{@students[i][:country_of_birth]}, #{@students[i][:height]}cm, #{@students[i][:hobbies]} - (#{@students[i][:cohort]} cohort)".center(@width)
     i += 1
   end
 end
