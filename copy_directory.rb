@@ -18,7 +18,7 @@ def create_directory
 end
 
 def input_cohort
-  puts "Please enter the month number of the cohort the student is on".center(@width)
+  puts "Please enter cohort month (please enter month number)".center(@width)
   cohort = gets.chomp
   next_cohort = :February
 
@@ -54,6 +54,14 @@ def input_cohort
   cohort
 end
 
+#refactoring with a ternary operator (must use more often)
+#takes the count and if it = to 1 then it will interpolate the string it receives
+#with singlular student, if more than 1 it will pluralize
+def pluralize_string(count)
+  count == 1 ? "#{count} student" : "#{count} students"
+end
+
+
 def input_students
   #creates a variable that triggers create_directory method
   begin_directory = create_directory
@@ -84,7 +92,7 @@ def input_students
     #pushes name, country, cohort and hobbies onto students array
     @students << {name: name, country_of_birth: country_of_birth, height: height, hobbies: hobbies.join(", "), cohort: cohort.to_sym}
     #counts number of students
-    puts "Now we have #{@students.count} students".center(@width)
+      puts "Now we have #{pluralize_string @students.count}".center(@width)
     #creates a variable that triggers create_directory to give user option to end
     begin_directory = create_directory
   end
@@ -102,7 +110,7 @@ def print_student_list_by_cohort(students)
       puts "#{cohort} cohort".upcase.center(@width)
         @students.each do |student|
           if student[:cohort] == cohort
-            puts student[:name]
+            puts student[:name].center(@width)
           end
         end
     end
@@ -120,7 +128,7 @@ end
 def print(students)
   i = 0
   while i < @students.count
-    puts "#{@students[i][:name]}, #{@students[i][:country_of_birth]}, #{@students[i][:height]}, #{@students[i][:hobbies]} - (#{@students[i][:cohort]} cohort)".center(@width)
+    puts "#{@students[i][:name]}, #{@students[i][:country_of_birth]}, #{@students[i][:height]} cm, #{@students[i][:hobbies]} - (#{@students[i][:cohort]} cohort)".center(@width)
     i += 1
   end
 end
@@ -128,7 +136,7 @@ end
 #method to output overall total of students
 def print_footer(names)
   puts
-  puts "Overall, we have #{names.count} great students".center(@width)
+  puts "Overall, we have #{pluralize_string names.count}".center(@width)
   puts "-------------".center(@width)
   puts
 end
