@@ -1,6 +1,7 @@
 #create instance variable width that inputs the width I want centre to be
 @width = 55
-
+#stores studentss in an array creates instance variable
+@students = []
 #request input from user to add a new student
 def create_directory
   puts "Input a new student? 'YES' or 'NO'".center(@width)
@@ -54,8 +55,6 @@ def input_cohort
 end
 
 def input_students
-  #stores studentss in an array
-  students = []
   #creates a variable that triggers create_directory method
   begin_directory = create_directory
 
@@ -65,7 +64,7 @@ def input_students
     puts "Please enter the name of the students".center(@width)
     name = gets.chomp
     if name.empty?
-      puts "Invalid input, student stored as Student Number: #{number_student += 1}"
+      puts "Invalid input, student stored as Student Number: #{number_student += 1}".center(@width)
     end
     cohort = input_cohort
     puts "Please enter country of birth".center(@width)
@@ -83,35 +82,59 @@ def input_students
     end
     hobbies
     #pushes name, country, cohort and hobbies onto students array
-    students << {name: name, country_of_birth: country_of_birth, height: height, hobbies: hobbies.join(", "), cohort: cohort.to_sym}
+    @students << {name: name, country_of_birth: country_of_birth, height: height, hobbies: hobbies.join(", "), cohort: cohort.to_sym}
     #counts number of students
-    puts "Now we have #{students.count} students".center(@width)
+    puts "Now we have #{@students.count} students".center(@width)
     #creates a variable that triggers create_directory to give user option to end
     begin_directory = create_directory
   end
-  students
+  @students
 end
+
+def print_student_list_by_cohort(students)
+  if @students.empty?
+    puts "UNAVAILABLE".center(@width)
+  else
+    cohorts = @students.map do |student|
+      student[:cohort]
+    end
+    cohorts.uniq.each do |cohort|
+      puts "#{cohort} cohort".upcase.center(@width)
+        @students.each do |student|
+          if student[:cohort] == cohort
+            puts student[:name]
+          end
+        end
+    end
+  end
+end
+
 
 def print_header
   puts "The students of Villians Academy".center(@width)
   puts "-------------".center(@width)
+  puts
 end
 
 #method to count number of students and puts name, country...
 def print(students)
   i = 0
-  while i < students.count
-    puts "#{students[i][:name]}, #{students[i][:country_of_birth]}, #{students[i][:height]}, #{students[i][:hobbies]} - (#{students[i][:cohort]} cohort)"
+  while i < @students.count
+    puts "#{@students[i][:name]}, #{@students[i][:country_of_birth]}, #{@students[i][:height]}, #{@students[i][:hobbies]} - (#{@students[i][:cohort]} cohort)".center(@width)
     i += 1
   end
 end
 
 #method to output overall total of students
 def print_footer(names)
+  puts
   puts "Overall, we have #{names.count} great students".center(@width)
+  puts "-------------".center(@width)
+  puts
 end
 
-students = input_students
+@students = input_students
 print_header
-print(students)
-print_footer(students)
+print(@students)
+print_footer(@students)
+print_student_list_by_cohort(@students)
