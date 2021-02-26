@@ -235,14 +235,17 @@ end
 
 #####Save/Load######
 
+require 'csv'
+
 def save_students(filename = @default_filename)
   # open the file for writing
-  file = File.open(filename, "w")
+  #open file for writing using csv class
+  csv.open(filename, "wb") do |csv|
   # iterate over the array of students
   @students.each do |student|
-    student_data = [student[:name], student[:country_of_birth], student[:height], student[:hobbies], student[:cohort]]
-    csv_line = student_data.join(",")
-    file.puts csv_line
+    csv << [student[:name], student[:country_of_birth], student[:height], student[:hobbies], student[:cohort]]
+  end
+  @loaded_filename
   end
   file.close
   puts "#{filename} saved".center(@width)
@@ -251,16 +254,28 @@ end
 
 
 def load_students(filename = @default_filename)
-  file = File.open(filename, "r")
-    file.readlines.each do |line|
-    name, country_of_birth, height, hobbies, cohort = line.chomp.split(',')
-    add_students(name, country_of_birth, height, hobbies, cohort)
+  if File.exists?(filename)
+    CSV.foreach(filename) do |row|
+      name, country_of_birth, height, hobbies, cohort = row
+      add_students(name, country_of_birth, height, hobbies, cohort)
     file.close
   end
+  @loaded_filename = filename
   puts "#{filename} loaded".center(@width)
   divider
+  else
+   if filename == @default_filename
+     puts "The default file #{@default_filename} was not found"
+     File.write("students.csv", "")
+     @loaded_filename = filename
+     puts "A new #{@default_filename} was created"
+   else
+     puts "#{error_msg} File #{filename} not found".center(@width)
+     puts
+     puts "Loading #{@loaded_filename}".center(@width)
+   end
+ end
 end
-
 
 def try_load_students
   filename = ARGV.first # first argument from the command line
@@ -270,7 +285,9 @@ def try_load_students
     puts
     @loaded_filename = @default_filename
     load_students
-  elsif File.exists?(filename) # if it exists
+    return
+  end
+  if File.exists?(filename) # if it exists
     @loaded_filename
     load_students(filename)
      puts "Loaded #{@students.count} from #{filename}".center(@width)
