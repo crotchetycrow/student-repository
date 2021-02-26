@@ -207,25 +207,34 @@ def save_students
   file.close
 end
 
+
 def load_students(filename = "students.csv")
   file = File.open(filename, "r")
-  file.readlines.each do |line|
+    file.readlines.each do |line|
     name, country_of_birth, height, hobbies, cohort = line.chomp.split(',')
     add_students(name, country_of_birth, height, hobbies, cohort)
-  file.close
+    file.close
+  end
 end
+
 
 def try_load_students
   filename = ARGV.first # first argument from the command line
-  return if filename.nil? # get out of the method if it isn't given
-  if File.exists?(filename) # if it exists
+  if filename.nil?
+    puts
+    puts "Loading student.csv...".center(@width)
+    puts
+    puts "student.csv loaded".center(@width)
+    load_students
+  elsif File.exists?(filename) # if it exists
     load_students(filename)
-     puts "Loaded #{@students.count} from #{filename}"
+     puts "Loaded #{@students.count} from #{filename}".center(@width)
   else # if it doesn't exist
-    puts "Sorry, #{filename} doesn't exist."
+    puts "Sorry, #{filename} doesn't exist.".center(@width)
     exit # quit the program
   end
 end
-end
 
+
+try_load_students
 interactive_menu
