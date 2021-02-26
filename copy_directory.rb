@@ -124,8 +124,6 @@ def add_students(name, country_of_birth, height, hobbies, cohort)
   @students << {name: name, country_of_birth: country_of_birth, height: height, hobbies: hobbies, cohort: cohort}
 end
 
-#test
-
 def print_header
   if !@students.empty?
     puts "The students of Villians Academy".center(@width)
