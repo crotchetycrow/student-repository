@@ -1,7 +1,11 @@
+#####Instance variables#####
 #create instance variable width that inputs the width I want centre to be
 @width = 55
 #stores students in an array creates instance variable
 @students = []
+
+######Input######
+
 #request input from user to add a new student
 def create_directory
   puts "Input a new student? 'YES' or 'NO'".center(@width)
@@ -11,13 +15,30 @@ def create_directory
   elsif user_input == "NO"
     return false
   else
-    puts "!----ERROR----!".center(@width)
+    error_msg
     puts "Did not understand input. Please input 'YES' or 'NO'".center(@width)
-    puts "!----ERROR----!".center(@width)
+    error_msg
     puts
   end
   #returns method to start again
   create_directory
+end
+
+def process(selection)
+  case selection
+    when "1"
+      input_students
+    when "2"
+      show_students
+    when "3"
+      save_students
+    when "4"
+      load_students
+    when "9"
+      exit
+    else
+      puts "I don't know what you mean, try again"
+  end
 end
 
 def input_cohort
@@ -56,14 +77,6 @@ def input_cohort
   end
   cohort
 end
-
-#refactoring with a ternary operator (must use more often)
-#takes the count and if it = to 1 then it will interpolate the string it receives
-#with singlular student, if more than 1 it will pluralize
-def pluralize_string(count)
-  count == 1 ? "#{count} student" : "#{count} students"
-end
-
 
 def input_students
   #creates a variable that triggers create_directory method
@@ -124,16 +137,29 @@ def add_students(name, country_of_birth, height, hobbies, cohort)
   @students << {name: name, country_of_birth: country_of_birth, height: height, hobbies: hobbies, cohort: cohort}
 end
 
-def print_header
-  if !@students.empty?
-    puts "The students of Villians Academy".center(@width)
-    puts "-------------".center(@width)
-    puts
-  else
-    puts "The students of Villians Academy".center(@width)
-    puts "-------------".center(@width)
-    puts
-  end
+#####Tools#####
+
+#refactoring with a ternary operator (must use more often)
+#takes the count and if it = to 1 then it will interpolate the string it receives
+#with singlular student, if more than 1 it will pluralize
+def pluralize_string(count)
+  count == 1 ? "#{count} student" : "#{count} students"
+end
+
+def error_msg
+  puts "!----ERROR----!".center(@width)
+end
+
+def divider
+   puts "-------------".center(@width)
+end
+
+def print_menu
+  puts "1. Input the students"
+  puts "2. Show the students"
+  puts "3. Save list to students.csv"
+  puts "4. Load student list"
+  puts "9. Exit"
 end
 
 #method to count number of students and puts name, country...
@@ -149,20 +175,24 @@ def print_student_list
   end
 end
 
+def print_header
+  if !@students.empty?
+    puts "The students of Villians Academy".center(@width)
+    divider
+    puts
+  else
+    puts "The students of Villians Academy".center(@width)
+    divider
+    puts
+  end
+end
+
 #method to output overall total of students
 def print_footer
   puts
   puts "Overall, we have #{pluralize_string @students.count}".center(@width)
-  puts "-------------".center(@width)
+  divider
   puts
-end
-
-def print_menu
-  puts "1. Input the students"
-  puts "2. Show the students"
-  puts "3. Save list to students.csv"
-  puts "4. Load student list"
-  puts "9. Exit"
 end
 
 def show_students
@@ -171,29 +201,14 @@ def show_students
   print_footer
 end
 
-def process(selection)
-  case selection
-    when "1"
-      input_students
-    when "2"
-      show_students
-    when "3"
-      save_students
-    when "4"
-      load_students
-    when "9"
-      exit
-    else
-      puts "I don't know what you mean, try again"
-  end
-end
-
 def interactive_menu
   loop do
     print_menu
     process(gets.chomp)
   end
 end
+
+#####Save/Load######
 
 def save_students
   # open the file for writing
@@ -235,6 +250,7 @@ def try_load_students
   end
 end
 
+#####Execute#####
 
 try_load_students
 interactive_menu
