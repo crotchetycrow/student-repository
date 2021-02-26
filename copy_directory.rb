@@ -4,6 +4,9 @@
 #stores students in an array creates instance variable
 @students = []
 
+@default_filename = "students.csv"
+
+@loaded_filename = ""
 ######Input######
 
 #request input from user to add a new student
@@ -86,20 +89,25 @@ def input_students
     #grabs user input for name and country, height
     puts "Please enter the name of the students".center(@width)
     name = gets.chop
+    action_success
     if name.empty?
       puts "No input"
       break
     end
     cohort = input_cohort
+    action_success
     puts "Please enter country of birth".center(@width)
     country_of_birth = gets.chop
+    action_success
     puts "Please enter height in cm (if available)".center(@width)
     height = gets.chop
+    action_success
     #grab user input for hobbies and stores it in an empty array. Join used to convert into string
     hobbies = []
     puts "Please enter student's hobbies".center(@width)
     puts "(To finish, just hit return twice)".center(@width)
     hobby = gets.chop
+    action_success
     while !hobby.empty?
       hobbies << hobby
       hobby = gets.chop
@@ -152,6 +160,10 @@ end
 
 def divider
    puts "-------------".center(@width)
+end
+
+def action_success
+  puts "Input saved".center(@width)
 end
 
 def print_menu
@@ -212,7 +224,7 @@ end
 
 def save_students
   # open the file for writing
-  file = File.open("students.csv", "w")
+  file = File.open(@default_filename, "w")
   # iterate over the array of students
   @students.each do |student|
     student_data = [student[:name], student[:country_of_birth], student[:height], student[:hobbies], student[:cohort]]
@@ -220,16 +232,19 @@ def save_students
     file.puts csv_line
   end
   file.close
+  action_success
 end
 
 
-def load_students(filename = "students.csv")
+def load_students(filename = @default_filename)
   file = File.open(filename, "r")
     file.readlines.each do |line|
     name, country_of_birth, height, hobbies, cohort = line.chomp.split(',')
     add_students(name, country_of_birth, height, hobbies, cohort)
     file.close
   end
+  puts "#{@loaded_filename} loaded".center(@width)
+  divider
 end
 
 
@@ -237,11 +252,12 @@ def try_load_students
   filename = ARGV.first # first argument from the command line
   if filename.nil?
     puts
-    puts "Loading student.csv...".center(@width)
+    puts "Loading default file...".center(@width)
     puts
-    puts "student.csv loaded".center(@width)
+    @loaded_filename = @default_filename
     load_students
   elsif File.exists?(filename) # if it exists
+    @loaded_filename
     load_students(filename)
      puts "Loaded #{@students.count} from #{filename}".center(@width)
   else # if it doesn't exist
