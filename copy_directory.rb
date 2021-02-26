@@ -1,6 +1,6 @@
 #create instance variable width that inputs the width I want centre to be
 @width = 55
-#stores studentss in an array creates instance variable
+#stores students in an array creates instance variable
 @students = []
 #request input from user to add a new student
 def create_directory
@@ -50,9 +50,9 @@ def input_cohort
     cohort = :November
   when "12"
     cohort = :December
-  # else
-  #   puts "Invalid input. Student placed in next available cohort, #{next_cohort}"
-  #   cohort = next_cohort
+  else
+    puts "Invalid input. Student placed in next available cohort, #{next_cohort}"
+    cohort = next_cohort
   end
   cohort
 end
@@ -93,9 +93,9 @@ def input_students
     end
     hobbies
     #pushes name, country, cohort and hobbies onto students array
-    @students << {name: name, country_of_birth: country_of_birth, height: height, hobbies: hobbies.join(", "), cohort: cohort.to_sym}
+    add_students(name, country_of_birth, height, hobbies.join(", "), cohort.to_sym  )
     #counts number of students
-      puts "Now we have #{pluralize_string @students.count}".center(@width)
+    puts "Now we have #{pluralize_string @students.count}".center(@width)
     #creates a variable that triggers create_directory to give user option to end
     begin_directory = create_directory
   end
@@ -120,6 +120,10 @@ def print_student_list_by_cohort(students)
   end
 end
 
+def add_students(name, country_of_birth, height, hobbies, cohort)
+  @students << {name: name, country_of_birth: country_of_birth, height: height, hobbies: hobbies, cohort: cohort}
+end
+
 
 def print_header
   if !@students.empty?
@@ -134,8 +138,8 @@ def print_header
 end
 
 #method to count number of students and puts name, country...
-def print(students)
-  if students.empty?
+def print_student_list
+  if @students.empty?
     puts "No students inputted".upcase.center(@width)
   else
     i = 0
@@ -147,15 +151,82 @@ def print(students)
 end
 
 #method to output overall total of students
-def print_footer(names)
+def print_footer
   puts
-  puts "Overall, we have #{pluralize_string names.count}".center(@width)
+  puts "Overall, we have #{pluralize_string @students.count}".center(@width)
   puts "-------------".center(@width)
   puts
 end
 
-@students = input_students
-print_header
-print(@students)
-print_footer(@students)
-print_student_list_by_cohort(@students)
+def print_menu
+  puts "1. Input the students"
+  puts "2. Show the students"
+  puts "3. Save list to students.csv"
+  puts "4. Load student list"
+  puts "9. Exit"
+end
+
+def show_students
+  print_header
+  print_student_list
+  print_footer
+end
+
+def process(selection)
+  case selection
+    when "1"
+      input_students
+    when "2"
+      show_students
+    when "3"
+      save_students
+    when "4"
+      load_students
+    when "9"
+      exit
+    else
+      puts "I don't know what you mean, try again"
+  end
+end
+
+def interactive_menu
+  loop do
+    print_menu
+    process(gets.chomp)
+  end
+end
+
+def save_students
+  # open the file for writing
+  file = File.open("students.csv", "w")
+  # iterate over the array of students
+  @students.each do |student|
+    student_data = [student[:name], student[:country_of_birth], student[:height], student[:hobbies], student[:cohort]]
+    csv_line = student_data.join(",")
+    file.puts csv_line
+  end
+  file.close
+end
+
+def load_students(filename = "students.csv")
+  file = File.open(filename, "r")
+  file.readlines.each do |line|
+    name, country_of_birth, height, hobbies, cohort = line.chomp.split(',')
+    add_students(name, country_of_birth, height, hobbies, cohort)
+  file.close
+end
+
+def try_load_students
+  filename = ARGV.first # first argument from the command line
+  return if filename.nil? # get out of the method if it isn't given
+  if File.exists?(filename) # if it exists
+    load_students(filename)
+     puts "Loaded #{@students.count} from #{filename}"
+  else # if it doesn't exist
+    puts "Sorry, #{filename} doesn't exist."
+    exit # quit the program
+  end
+end
+end
+
+interactive_menu
