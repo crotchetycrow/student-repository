@@ -12,7 +12,7 @@
 #request input from user to add a new student
 def create_directory
   puts "Input a new student? 'YES' or 'NO'".center(@width)
-  user_input = gets.chop.upcase
+  user_input = STDIN.gets.chop.upcase
   if user_input == "YES"
     return true
   elsif user_input == "NO"
@@ -34,9 +34,21 @@ def process(selection)
     when "2"
       show_students
     when "3"
-      save_students
+      puts "Which file would you like to save to? (for example 'students.csv')"
+      select_save = STDIN.gets.chomp
+      if select_save.empty?
+        save_students
+      else
+        save_students(select_save)
+      end
     when "4"
-      load_students
+      puts "Which file would you like to load? (for example 'students.csv')"
+      select_load = STDIN.gets.chomp
+      if select_load.empty?
+        load_students
+      else
+        load_students(select_load)
+      end
     when "9"
       exit
     else
@@ -46,7 +58,7 @@ end
 
 def input_cohort
   puts "Please enter cohort month (please enter month number)".center(@width)
-  cohort = gets.chop
+  cohort = STDIN.gets.chomp
   next_cohort = :February
 
   case cohort
@@ -81,6 +93,7 @@ def input_cohort
   cohort
 end
 
+
 def input_students
   #creates a variable that triggers create_directory method
   begin_directory = create_directory
@@ -88,7 +101,7 @@ def input_students
   while begin_directory
     #grabs user input for name and country, height
     puts "Please enter the name of the students".center(@width)
-    name = gets.chop
+    name = STDIN.gets.chop
     action_success
     if name.empty?
       puts "No input"
@@ -97,20 +110,20 @@ def input_students
     cohort = input_cohort
     action_success
     puts "Please enter country of birth".center(@width)
-    country_of_birth = gets.chop
+    country_of_birth = STDIN.gets.chop
     action_success
     puts "Please enter height in cm (if available)".center(@width)
-    height = gets.chop
+    height = STDIN.gets.chop
     action_success
     #grab user input for hobbies and stores it in an empty array. Join used to convert into string
     hobbies = []
     puts "Please enter student's hobbies".center(@width)
     puts "(To finish, just hit return twice)".center(@width)
-    hobby = gets.chop
+    hobby = STDIN.gets.chop
     action_success
     while !hobby.empty?
       hobbies << hobby
-      hobby = gets.chop
+      hobby = STDIN.gets.chop
     end
     hobbies
     #pushes name, country, cohort and hobbies onto students array
@@ -222,9 +235,9 @@ end
 
 #####Save/Load######
 
-def save_students
+def save_students(filename = @default_filename)
   # open the file for writing
-  file = File.open(@default_filename, "w")
+  file = File.open(filename, "w")
   # iterate over the array of students
   @students.each do |student|
     student_data = [student[:name], student[:country_of_birth], student[:height], student[:hobbies], student[:cohort]]
@@ -232,7 +245,8 @@ def save_students
     file.puts csv_line
   end
   file.close
-  action_success
+  puts "#{filename} saved".center(@width)
+  divider
 end
 
 
@@ -243,7 +257,7 @@ def load_students(filename = @default_filename)
     add_students(name, country_of_birth, height, hobbies, cohort)
     file.close
   end
-  puts "#{@loaded_filename} loaded".center(@width)
+  puts "#{filename} loaded".center(@width)
   divider
 end
 
